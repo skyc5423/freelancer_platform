@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  fastapi:
+    build:
+      context: ./reservation-server
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
+
+  react:
+    build:
+      context: ./reservation-app
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    depends_on:
+      - fastapi
+
+networks:
+  app-network:
+    driver: bridge
