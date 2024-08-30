@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-const API_URL_QUERY_SCHEDULE_BY_MONTH = "http://localhost:8000/api";
+const API_URL_QUERY_SCHEDULE_BY_MONTH = "http://3.36.123.32:3000/api";
 
 const ReservationApp = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
