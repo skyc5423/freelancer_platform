@@ -15,7 +15,7 @@ services:
       context: ./reservation-app
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "0.0.0.0:3000:3000"
     networks:
       - app-network
     depends_on:
