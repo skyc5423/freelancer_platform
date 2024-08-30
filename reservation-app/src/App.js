@@ -1,43 +1,57 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-const ReservationApp = () => {
-  const [selectedLocation, setSelectedLocation] = useState("");
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedTime, setSelectedTime] = useState("");
-  const [selectedTheme, setSelectedTheme] = useState("");
+const API_URL_QUERY_SCHEDULE_BY_MONTH = "http://localhost:8000/api";
 
-  const locations = ["원데이 클래스", "어쩌구 저쩌구"];
-  const times = ["09:55", "11:15", "12:35", "13:55", "15:15"];
-  const themes = ["춤 1", "춤 2", "춤 3", "춤 4", "춤 5"];
+const ReservationApp = () => {
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedClass, setSelectedClass] = useState(null);
+  const [classes, setClasses] = useState([]);
+
+  useEffect(() => {
+    fetchClasses(selectedDate);
+  }, [selectedDate]);
+
+  const fetchClasses = async (date) => {
+    const formattedDate = date.toISOString().split("T")[0].replace(/-/g, "");
+    try {
+      console.log(
+        `Fetching from URL: ${API_URL_QUERY_SCHEDULE_BY_MONTH}/${formattedDate}`
+      );
+      const response = await fetch(
+        `${API_URL_QUERY_SCHEDULE_BY_MONTH}/${formattedDate}`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+          },
+          mode: "cors", // Explicitly set CORS mode
+        }
+      );
+
+      console.log("Response status:", response.status);
+      console.log("Response headers:", response.headers);
+
+      if (response.ok) {
+        const data = await response.json();
+
+        console.log(data);
+        setClasses(data);
+      }
+    } catch (error) {
+      console.error("Error fetching classes:", error);
+    }
+  };
+
+  const locations = Array.from(new Set(classes.map((c) => c.location_name)));
+  const times = Array.from(new Set(classes.map((c) => c.start_time)));
 
   return (
     <div className="p-4 max-w-4xl mx-auto">
       <h1 className="text-4xl font-bold mb-6">RESERVATION</h1>
 
-      {/* Main content */}
       <div className="space-y-6">
-        {/* Location selection */}
-        <div>
-          <h2 className="text-xl font-bold mb-2">지점</h2>
-          <div className="flex flex-wrap gap-2">
-            {locations.map((location) => (
-              <button
-                key={location}
-                className={`px-3 py-1 border rounded ${
-                  selectedLocation === location
-                    ? "bg-gray-800 text-white"
-                    : "bg-white"
-                }`}
-                onClick={() => setSelectedLocation(location)}
-              >
-                {location}
-              </button>
-            ))}
-          </div>
-        </div>
-
         {/* Date selection */}
         <div>
           <h2 className="text-xl font-bold mb-2">날짜</h2>
@@ -49,21 +63,43 @@ const ReservationApp = () => {
           />
         </div>
 
-        {/* Theme selection */}
+        {/* Location selection */}
         <div>
-          <h2 className="text-xl font-bold mb-2">테마</h2>
-          <div className="space-y-2">
-            {themes.map((theme) => (
+          <h2 className="text-xl font-bold mb-2">지점</h2>
+          <div className="flex flex-wrap gap-2">
+            {locations.map((location) => (
               <button
-                key={theme}
+                key={location}
+                className={`px-3 py-1 border rounded ${
+                  selectedClass?.location_name === location
+                    ? "bg-gray-800 text-white"
+                    : "bg-white"
+                }`}
+                onClick={() => setSelectedClass(null)}
+              >
+                {location}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Class selection */}
+        <div>
+          <h2 className="text-xl font-bold mb-2">수업</h2>
+          <div className="space-y-2">
+            {classes.map((classItem) => (
+              <button
+                key={`${classItem.date}-${classItem.start_time}-${classItem.location_name}`}
                 className={`w-full text-left p-2 ${
-                  selectedTheme === theme
+                  selectedClass === classItem
                     ? "bg-gray-800 text-white"
                     : "bg-gray-200"
                 }`}
-                onClick={() => setSelectedTheme(theme)}
+                onClick={() => setSelectedClass(classItem)}
               >
-                {theme}
+                {classItem.class_type || "일반 수업"} -{" "}
+                {classItem.location_name} - {classItem.start_time}~
+                {classItem.end_time}
               </button>
             ))}
           </div>
@@ -77,9 +113,13 @@ const ReservationApp = () => {
               <button
                 key={time}
                 className={`flex items-center px-3 py-1 border rounded ${
-                  selectedTime === time ? "bg-gray-800 text-white" : "bg-white"
+                  selectedClass?.start_time === time
+                    ? "bg-gray-800 text-white"
+                    : "bg-white"
                 }`}
-                onClick={() => setSelectedTime(time)}
+                onClick={() =>
+                  setSelectedClass(classes.find((c) => c.start_time === time))
+                }
               >
                 <span className="mr-1">🕒</span> {time}
               </button>
