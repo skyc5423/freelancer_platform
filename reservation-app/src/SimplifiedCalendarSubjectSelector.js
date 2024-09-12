@@ -21,7 +21,7 @@ const SimplifiedCalendarSubjectSelector = () => {
     setError(null);
     const dateString = formatDate(date);
     try {
-      const response = await fetch(`http://fastapi:8000/api/${dateString}`);
+      const response = await fetch(`http://3.36.123.32:8000/api/${dateString}`);
       if (!response.ok) {
         throw new Error("Failed to fetch subjects");
       }
