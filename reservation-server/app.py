@@ -83,7 +83,7 @@ def get_credentials():
         "https://www.googleapis.com/auth/drive",
         "https://www.googleapis.com/auth/spreadsheets"
     ]
-    credentials_path = 'reservation-server/credentials/credentials.json'
+    credentials_path = 'credentials/credentials.json'
     return service_account.Credentials.from_service_account_file(
         credentials_path, scopes=SCOPES)
 
