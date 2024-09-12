@@ -21,7 +21,16 @@ const SimplifiedCalendarSubjectSelector = () => {
     setError(null);
     const dateString = formatDate(date);
     try {
-      const response = await fetch(`http://3.36.123.32:8000/api/${dateString}`);
+      const response = await fetch(
+        `http://3.36.123.32:8000/api/${dateString}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch subjects");
       }
