@@ -1,3 +1,5 @@
 .vscode/
 reservation-server/credentials
 reservation-server/__pycache__
+
+reservation-app/node_modules/
