@@ -65,9 +65,6 @@ def log_function_call(func):
     return wrapper
 
 
-app = FastAPI()
-
-
 class Schedule(BaseModel):
     date: str
     class_type: str
