@@ -17,16 +17,17 @@ from typing import List
 import time
 
 app = FastAPI()
+origins = [
+    "http://3.36.123.32:3000",  # Frontend URL
+]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000",
-                   "http://3.36.123.32:3000/"],
+    allow_origins=origins,  # Can also use ["*"] to allow all origins
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
 )
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
