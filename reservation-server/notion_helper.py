@@ -13,9 +13,11 @@ class NotionHelper:
     def __init__(self):
         self.notion = Client(auth=notion_secret_key)
 
+    @log_function_call
     def _get_all_database_list(self):
         return self.notion.search(filter={"property": "object", "value": "database"})['results']
 
+    @log_function_call
     def _get_database_id(self, database_title: str):
         return [database for database in self._get_all_database_list() if database['title']
                 [0]['text']['content'] == database_title][0]['id']
