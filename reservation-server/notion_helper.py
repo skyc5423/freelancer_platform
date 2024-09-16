@@ -2,7 +2,7 @@ from notion_client import Client
 import json
 import datetime
 from custom_dataclasses.schedule import Schedule
-with open('reservation-server/credentials/notion_api_key.json') as f:
+with open('credentials/notion_api_key.json') as f:
     notion_secret_key = json.load(f)['api_key']
 
 
