@@ -2,6 +2,9 @@ from notion_client import Client
 import json
 import datetime
 from custom_dataclasses.schedule import Schedule
+from utils import log_function_call
+
+
 with open('credentials/notion_api_key.json') as f:
     notion_secret_key = json.load(f)['api_key']
 
@@ -17,12 +20,14 @@ class NotionHelper:
         return [database for database in self._get_all_database_list() if database['title']
                 [0]['text']['content'] == database_title][0]['id']
 
+    @log_function_call
     def get_database_with_title(self, database_title: str):
         return self.notion.databases.query(database_id=self._get_database_id(database_title))
 
     def convert_string_to_datetime(self, date: str) -> datetime.datetime:
         return datetime.datetime.strptime(date, '%Y-%m-%dT%H:%M:%S.%f%z')
 
+    @log_function_call
     def parse_schedule(self, schedule):
         schedule_date_start = self.convert_string_to_datetime(
             schedule['properties']['시작 시간']['date']['start'])
