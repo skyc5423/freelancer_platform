@@ -1,20 +1,16 @@
-from pydantic import BaseModel
+from typing import List
 from fastapi import FastAPI
 import uvicorn
-from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from googleapiclient.discovery import build
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
 from google.oauth2 import service_account
 import logging
 from functools import wraps
 import inspect
 from itertools import zip_longest
-import json
 from custom_dataclasses.schedule import Schedule
-from typing import List
 import time
+from notion_helper import notion_helper as notion
+
 
 app = FastAPI()
 origins = [
@@ -65,16 +61,6 @@ def log_function_call(func):
     return wrapper
 
 
-class Schedule(BaseModel):
-    date: str
-    class_type: str
-    start_time: str
-    end_time: str
-    location_name: str
-    max_user_num: int
-    user_id_list: List[str]
-
-
 @log_function_call
 def get_credentials():
     SCOPES = [
@@ -120,27 +106,8 @@ def parse_sheet_data(values, date):
 
 @app.get("/api/{date}")
 async def get_entities_by_date(date: str) -> List[Schedule]:
-    year = date[:4]
-    month = int(date[4:6])
-
-    try:
-        credentials = get_credentials()
-        drive_service = build('drive', 'v3', credentials=credentials)
-        sheets_service = build('sheets', 'v4', credentials=credentials)
-
-        file_id = get_file_id(drive_service, year)
-        if not file_id:
-            print(f'No file named "{year}" found.')
-            return []
-
-        sheet = sheets_service.spreadsheets()
-        values = get_sheet_data(sheet, file_id, month)
-
-        return parse_sheet_data(values, date)
-
-    except HttpError as error:
-        print(f"An error occurred: {error}")
-        return []
+    schedule = notion.get_schedule_by_date(date)
+    return schedule
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
