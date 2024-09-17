@@ -41,8 +41,16 @@ class NotionHelper:
                         "contains": f"{date}"
             }
         }
+
+        sorts = [
+            {
+                "property": "시작 시간",
+                "direction": "Ascending"
+            }
+        ]
         return self.notion.databases.query(database_id=self._get_database_id(database_title),
-                                           filter=filters)
+                                           filter=filters,
+                                           sorts=sorts)
 
     def convert_string_to_datetime(self, date: str) -> datetime.datetime:
         return datetime.datetime.strptime(date, '%Y-%m-%dT%H:%M:%S.%f%z')
