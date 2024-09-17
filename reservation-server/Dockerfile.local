@@ -16,7 +16,7 @@ COPY . .
 # Expose port 8000
 EXPOSE 8000
 
-ENV CREDENTIALS_PATH=credentials
+ENV CREDENTIALS_PATH=reservation-server/credentials
 
 # Command to run the application
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]

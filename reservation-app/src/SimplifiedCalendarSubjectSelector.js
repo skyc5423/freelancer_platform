@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import SubjectList from "./SubjectList.js";
+// import { Link } from "react-router-dom";
 
 const SimplifiedCalendarSubjectSelector = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -6,6 +8,7 @@ const SimplifiedCalendarSubjectSelector = () => {
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [selectedSubject, setSelectedSubject] = useState(null);
 
   // Simulate fetching subjects for a specific date
 
@@ -21,16 +24,8 @@ const SimplifiedCalendarSubjectSelector = () => {
     setError(null);
     const dateString = formatDate(date);
     try {
-      const response = await fetch(
-        `http://3.36.123.32:8000/api/${dateString}`
-        // {
-        //   method: "GET",
-        //   credentials: "include",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        // }
-      );
+      const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8000";
+      const response = await fetch(`${apiUrl}/api/${dateString}`);
       if (!response.ok) {
         throw new Error("Failed to fetch subjects");
       }
@@ -43,6 +38,16 @@ const SimplifiedCalendarSubjectSelector = () => {
       setLoading(false);
     }
   };
+
+  const handleSubjectClick = (subject) => {
+    setSelectedSubject(subject);
+  };
+
+  // const handleReservation = () => {
+  //   if (selectedSubject) {
+  //     navigate("/reservation", { state: { subject: selectedSubject } });
+  //   }
+  // };
 
   useEffect(() => {
     if (selectedDate) {
@@ -183,15 +188,16 @@ const SimplifiedCalendarSubjectSelector = () => {
                   backgroundColor: isSelected ? "#007bff" : "transparent",
                   color: isSelected ? "white" : "black",
                 }}
-                onClick={() =>
+                onClick={() => {
                   setSelectedDate(
                     new Date(
                       currentMonth.getFullYear(),
                       currentMonth.getMonth(),
                       date
                     )
-                  )
-                }
+                  );
+                  setSelectedSubject(null);
+                }}
               >
                 {date}
               </div>
@@ -206,21 +212,29 @@ const SimplifiedCalendarSubjectSelector = () => {
         {loading ? (
           <p>Loading subjects...</p>
         ) : selectedDate ? (
-          subjects.length > 0 ? (
-            <ul style={styles.subjectList}>
-              {subjects.map((subject) => (
-                <li key={subject} style={styles.subjectItem}>
-                  {`${subject.start_time}-${subject.end_time}: ${subject.class_type}\n${subject.location_name} (${subject.user_id_list.length}/${subject.max_user_num})`}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No subjects for this date.</p>
-          )
+          <SubjectList
+            subjects={subjects}
+            onSubjectClick={handleSubjectClick}
+            selectedSubject={selectedSubject}
+          />
         ) : (
           <p>Select a date to view subjects.</p>
         )}
         {error && <p style={{ color: "red" }}>{error}</p>}
+        {/* <Link
+          to="/reservation"
+          state={{ subject: selectedSubject }}
+          style={{
+            ...styles.button,
+            marginTop: "20px",
+            opacity: selectedSubject ? 1 : 0.5,
+            pointerEvents: selectedSubject ? "auto" : "none",
+            textDecoration: "none",
+            display: "inline-block",
+          }}
+        >
+          예약하기
+        </Link> */}
       </div>
     </div>
   );

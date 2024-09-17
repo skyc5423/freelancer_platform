@@ -3,9 +3,10 @@ import json
 import datetime
 from custom_dataclasses.schedule import Schedule
 from utils import log_function_call
+import os
 
 
-with open('credentials/notion_api_key.json') as f:
+with open(f'{os.environ.get("CREDENTIALS_PATH", "reservation-server/credentials")}/notion_api_key.json') as f:
     notion_secret_key = json.load(f)['api_key']
 
 
@@ -45,7 +46,7 @@ class NotionHelper:
         sorts = [
             {
                 "property": "시작 시간",
-                "direction": "Ascending"
+                "direction": "ascending"
             }
         ]
         return self.notion.databases.query(database_id=self._get_database_id(database_title),
