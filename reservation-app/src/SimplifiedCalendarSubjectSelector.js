@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import SubjectList from "./SubjectList.js";
-// import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const SimplifiedCalendarSubjectSelector = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -9,6 +9,7 @@ const SimplifiedCalendarSubjectSelector = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedSubject, setSelectedSubject] = useState(null);
+  const navigate = useNavigate();
 
   // Simulate fetching subjects for a specific date
 
@@ -43,11 +44,11 @@ const SimplifiedCalendarSubjectSelector = () => {
     setSelectedSubject(subject);
   };
 
-  // const handleReservation = () => {
-  //   if (selectedSubject) {
-  //     navigate("/reservation", { state: { subject: selectedSubject } });
-  //   }
-  // };
+  const handleReservation = () => {
+    if (selectedSubject) {
+      navigate("/reservation", { state: { subject: selectedSubject } });
+    }
+  };
 
   useEffect(() => {
     if (selectedDate) {
@@ -221,20 +222,18 @@ const SimplifiedCalendarSubjectSelector = () => {
           <p>Select a date to view subjects.</p>
         )}
         {error && <p style={{ color: "red" }}>{error}</p>}
-        {/* <Link
-          to="/reservation"
-          state={{ subject: selectedSubject }}
+        <button
           style={{
             ...styles.button,
             marginTop: "20px",
             opacity: selectedSubject ? 1 : 0.5,
-            pointerEvents: selectedSubject ? "auto" : "none",
-            textDecoration: "none",
-            display: "inline-block",
+            cursor: selectedSubject ? "pointer" : "not-allowed",
           }}
+          onClick={handleReservation}
+          disabled={!selectedSubject}
         >
           예약하기
-        </Link> */}
+        </button>
       </div>
     </div>
   );
