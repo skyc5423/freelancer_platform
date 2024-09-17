@@ -12,15 +12,22 @@ with open('credentials/notion_api_key.json') as f:
 class NotionHelper:
     def __init__(self):
         self.notion = Client(auth=notion_secret_key)
+        self.cache_database_list = None
+        self.cache_database_id = None
 
     @log_function_call
     def _get_all_database_list(self):
-        return self.notion.search(filter={"property": "object", "value": "database"})['results']
+        if not self.cache_database_list:
+            self.cache_database_list = self.notion.search(
+                filter={"property": "object", "value": "database"})['results']
+        return self.cache_database_list
 
     @log_function_call
     def _get_database_id(self, database_title: str):
-        return [database for database in self._get_all_database_list() if database['title']
-                [0]['text']['content'] == database_title][0]['id']
+        if not self.cache_database_id:
+            self.cache_database_id = {database['title'][0]['text']['content']: database['id']
+                                      for database in self._get_all_database_list()}
+        return self.cache_database_id[database_title]
 
     @log_function_call
     def get_database_with_title(self, database_title: str):
