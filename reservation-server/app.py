@@ -12,6 +12,7 @@ from utils import log_function_call
 app = FastAPI()
 origins = [
     "http://3.36.123.32:3000",  # Frontend URL
+    "http://localhost:3000",  # Frontend URL
 ]
 
 app.add_middleware(

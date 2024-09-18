@@ -27,7 +27,7 @@ class NotionHelper:
         if not self.cache_database_id or database_title not in self.cache_database_id.keys():
             self.cache_database_id = {database['title'][0]['text']['content']: database['id']
                                       for database in self._get_all_database_list()}
-        return self.cache_database_id[database_title]
+        return self.cache_database_id.get(database_title, None)
 
     @log_function_call
     def get_database_with_date(self, date: str):
@@ -51,7 +51,7 @@ class NotionHelper:
         ]
         return self.notion.databases.query(database_id=self._get_database_id(database_title),
                                            filter=filters,
-                                           sorts=sorts)
+                                           sorts=sorts) if self._get_database_id(database_title) else {'results': []}
 
     def convert_string_to_datetime(self, date: str) -> datetime.datetime:
         return datetime.datetime.strptime(date, '%Y-%m-%dT%H:%M:%S.%f%z')

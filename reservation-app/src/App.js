@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import SimplifiedCalendarSubjectSelector from "./SimplifiedCalendarSubjectSelector";
+import CalenderView from "./CalenderView";
 import ReservationPage from "./ReservationPage";
 
 function App() {
@@ -8,7 +8,7 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
-          <Route path="/" element={<SimplifiedCalendarSubjectSelector />} />
+          <Route path="/" element={<CalenderView />} />
           <Route path="/reservation" element={<ReservationPage />} />
         </Routes>
       </div>

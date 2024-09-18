@@ -7,12 +7,13 @@ const SubjectList = ({ subjects, onSubjectClick, selectedSubject }) => {
       padding: 0,
     },
     subjectItem: {
-      padding: "10px",
+      padding: "6px",
       marginBottom: "5px",
       backgroundColor: "#f0f0f0",
       borderRadius: "4px",
       transition: "background-color 0.3s",
       cursor: "pointer",
+      fontSize: "12px",
     },
     selectedSubject: {
       backgroundColor: "#007bff",
@@ -32,11 +33,12 @@ const SubjectList = ({ subjects, onSubjectClick, selectedSubject }) => {
             }}
             onClick={() => onSubjectClick(subject)}
           >
-            {`${subject.start_time}-${subject.end_time}: ${subject.class_type}\n${subject.location_name} (${subject.user_id_list.length}/${subject.max_user_num})`}
+            <div>{`${subject.start_time}-${subject.end_time}: ${subject.location_name} (${subject.user_id_list.length}/${subject.max_user_num})`}</div>
+            <div>{`${subject.class_type}: ${subject.class_song}`}</div>
           </li>
         ))
       ) : (
-        <p>No subjects for this date.</p>
+        <p>이 날에는 수업이 없어요 ㅠㅠ</p>
       )}
     </ul>
   );
