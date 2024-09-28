@@ -7,12 +7,12 @@ from itertools import zip_longest
 from custom_dataclasses.schedule import Schedule
 from notion_helper import notion_helper as notion
 from utils import log_function_call
+import os
 
 
 app = FastAPI()
 origins = [
-    "http://3.36.123.32:3000",  # Frontend URL
-    "http://localhost:3000",  # Frontend URL
+    f"http://{os.getenv('HOST')}:3000",  # Frontend URL
 ]
 
 app.add_middleware(

@@ -137,7 +137,7 @@ const ReservationPage = () => {
         </p>
         <p>
           <strong>현재 예약 인원:</strong>{" "}
-          {subject.max_user_num - subject.user_id_list.length} /{" "}
+          {subject.user_id_list.length} /{" "}
           {subject.max_user_num}
         </p>
       </div>

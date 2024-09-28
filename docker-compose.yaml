@@ -9,6 +9,8 @@ services:
       - "8000:8000"
     networks:
       - app-network
+    environment:
+      - HOST=54.180.248.75
 
   react:
     build:
