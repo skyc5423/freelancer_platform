@@ -6,7 +6,7 @@ from utils import log_function_call
 import os
 
 
-with open(f'{os.environ.get("CREDENTIALS_PATH", "reservation-server/credentials")}/notion_api_key.json') as f:
+with open(f'{os.environ.get("CREDENTIALS_PATH", "credentials")}/notion_api_key.json') as f:
     notion_secret_key = json.load(f)['api_key']
 
 
