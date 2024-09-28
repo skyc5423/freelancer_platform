@@ -6,3 +6,4 @@ reservation-server/custom_dataclasses/__pycache__
 reservation-app/.env
 
 node_modules
+rebuild.sh

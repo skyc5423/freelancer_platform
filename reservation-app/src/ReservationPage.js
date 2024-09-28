@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import axios from "axios";
 const ReservationPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -98,7 +98,7 @@ const ReservationPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
       const reservationData = {
@@ -109,9 +109,31 @@ const ReservationPage = () => {
           instagramId,
         },
       };
+      // API 요청 보내기
+      try {
+        const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8000";
+        try {
+          const response = await axios.post(`${apiUrl}/api/reservation`, reservationData);
+          console.log("예약이 성공적으로 생성되었습니다:", response.data);
+        } catch (error) {
+          if (error.response) {
+            console.error("서버 응답 오류:", error.response.data);
+            throw new Error("예약 생성에 실패했습니다: " + error.response.data.message);
+          } else if (error.request) {
+            console.error("요청 오류:", error.request);
+            throw new Error("서버에 연결할 수 없습니다. 네트워크를 확인해주세요.");
+          } else {
+            console.error("오류 발생:", error.message);
+            throw new Error("예약 생성 중 오류가 발생했습니다.");
+          }
+        }
+        alert("예약이 성공적으로 완료되었습니다.");
+        navigate(-1); // 이전 화면으로 돌아가기
+      } catch (err) {
+        console.error("예약 중 오류 발생:", err);
+        alert("예약에 실패했습니다. 다시 시도해 주세요.");
+      }
       console.log("Submitting reservation:", reservationData);
-      // After submitting, you might want to navigate to a confirmation page
-      // navigate("/confirmation", { state: { reservationData } });
     }
   };
 
@@ -136,8 +158,7 @@ const ReservationPage = () => {
           <strong>장소: </strong> {subject.location_name}
         </p>
         <p>
-          <strong>현재 예약 인원:</strong>{" "}
-          {subject.user_id_list.length} /{" "}
+          <strong>현재 예약 인원:</strong> {subject.user_id_list.length} /{" "}
           {subject.max_user_num}
         </p>
       </div>

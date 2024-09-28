@@ -5,12 +5,11 @@ services:
     build:
       context: ./reservation-server
       dockerfile: Dockerfile
+      # dockerfile: Dockerfile.local
     ports:
       - "8000:8000"
     networks:
       - app-network
-    environment:
-      - HOST=54.180.248.75
 
   react:
     build:
