@@ -11,3 +11,4 @@ class Schedule(BaseModel):
     user_id_list: List
     location_name: str
     max_user_num: int
+    database_id: str

@@ -4,11 +4,9 @@ import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 from custom_dataclasses.schedule import Schedule
 from notion_helper import notion_helper as notion
-import os
 
 
 app = FastAPI()
-host = os.environ.get('HOST', 'localhost')
 
 app.add_middleware(
     CORSMiddleware,
@@ -28,8 +26,7 @@ async def get_entities_by_date(date: str) -> List[Schedule]:
 @app.post("/api/reservation")
 async def make_reservation(reservation_data: dict):
     try:
-        subject = reservation_data['subject']
-        client = reservation_data['clientInfo']
+        notion.update_database(reservation_data)
         return {"message": "예약이 성공적으로 완료되었습니다."}
     except Exception as e:
         return {"error": f"예약 처리 중 오류가 발생했습니다: {str(e)}"}
